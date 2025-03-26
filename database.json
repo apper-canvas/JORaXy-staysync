@@ -1,0 +1,366 @@
+{
+  "database": {
+    "name": "webapp_db",
+    "tables": [
+      {
+        "name": "users",
+        "description": "Stores user account information",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "email",
+            "type": "VARCHAR(255)",
+            "constraints": ["UNIQUE", "NOT NULL"]
+          },
+          {
+            "name": "password_hash",
+            "type": "VARCHAR(255)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "first_name",
+            "type": "VARCHAR(100)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "last_name",
+            "type": "VARCHAR(100)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "phone",
+            "type": "VARCHAR(20)",
+            "constraints": []
+          },
+          {
+            "name": "address",
+            "type": "TEXT",
+            "constraints": []
+          },
+          {
+            "name": "role",
+            "type": "VARCHAR(20)",
+            "constraints": ["NOT NULL", "DEFAULT 'customer'"]
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "categories",
+        "description": "Product categories",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "name",
+            "type": "VARCHAR(100)",
+            "constraints": ["NOT NULL", "UNIQUE"]
+          },
+          {
+            "name": "description",
+            "type": "TEXT",
+            "constraints": []
+          },
+          {
+            "name": "parent_id",
+            "type": "INTEGER",
+            "constraints": ["REFERENCES categories(id)"]
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "products",
+        "description": "Product information",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "name",
+            "type": "VARCHAR(255)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "description",
+            "type": "TEXT",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "price",
+            "type": "DECIMAL(10,2)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "stock_quantity",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "DEFAULT 0"]
+          },
+          {
+            "name": "category_id",
+            "type": "INTEGER",
+            "constraints": ["REFERENCES categories(id)"]
+          },
+          {
+            "name": "image_url",
+            "type": "VARCHAR(255)",
+            "constraints": []
+          },
+          {
+            "name": "is_active",
+            "type": "BOOLEAN",
+            "constraints": ["NOT NULL", "DEFAULT TRUE"]
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "orders",
+        "description": "Customer orders",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "user_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES users(id)"]
+          },
+          {
+            "name": "status",
+            "type": "VARCHAR(20)",
+            "constraints": ["NOT NULL", "DEFAULT 'pending'"]
+          },
+          {
+            "name": "total_amount",
+            "type": "DECIMAL(10,2)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "shipping_address",
+            "type": "TEXT",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "billing_address",
+            "type": "TEXT",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "payment_method",
+            "type": "VARCHAR(50)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "shipping_method",
+            "type": "VARCHAR(50)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "tracking_number",
+            "type": "VARCHAR(100)",
+            "constraints": []
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "order_items",
+        "description": "Items within an order",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "order_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES orders(id)"]
+          },
+          {
+            "name": "product_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES products(id)"]
+          },
+          {
+            "name": "quantity",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "unit_price",
+            "type": "DECIMAL(10,2)",
+            "constraints": ["NOT NULL"]
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "reviews",
+        "description": "Product reviews by users",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "product_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES products(id)"]
+          },
+          {
+            "name": "user_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES users(id)"]
+          },
+          {
+            "name": "rating",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "CHECK (rating BETWEEN 1 AND 5)"]
+          },
+          {
+            "name": "comment",
+            "type": "TEXT",
+            "constraints": []
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      },
+      {
+        "name": "cart_items",
+        "description": "Items in user shopping carts",
+        "columns": [
+          {
+            "name": "id",
+            "type": "SERIAL",
+            "constraints": ["PRIMARY KEY"]
+          },
+          {
+            "name": "user_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES users(id)"]
+          },
+          {
+            "name": "product_id",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "REFERENCES products(id)"]
+          },
+          {
+            "name": "quantity",
+            "type": "INTEGER",
+            "constraints": ["NOT NULL", "DEFAULT 1"]
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP",
+            "constraints": ["NOT NULL", "DEFAULT CURRENT_TIMESTAMP"]
+          }
+        ]
+      }
+    ],
+    "indexes": [
+      {
+        "table": "users",
+        "columns": ["email"],
+        "unique": true
+      },
+      {
+        "table": "products",
+        "columns": ["category_id"]
+      },
+      {
+        "table": "orders",
+        "columns": ["user_id"]
+      },
+      {
+        "table": "order_items",
+        "columns": ["order_id", "product_id"]
+      },
+      {
+        "table": "reviews",
+        "columns": ["product_id"]
+      },
+      {
+        "table": "reviews",
+        "columns": ["user_id"]
+      },
+      {
+        "table": "cart_items",
+        "columns": ["user_id", "product_id"],
+        "unique": true
+      }
+    ]
+  }
+}
